@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisanDwar | Mandi Queue & Procurement Management System (SIH26032)</title>
+    <meta name="theme-color" content="#059669">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <div class="brand-logo">
+                <span class="logo-icon">🌾</span>
+                <span class="brand-badge-flag"></span>
+            </div>
+            <div class="brand-titles">
+                <div class="brand-name">
+                    <span class="brand-primary" data-i18n="app_title">KisanDwar</span>
+                    <span class="brand-sub">MandiSetu</span>
+                </div>
+                <div class="brand-tagline" data-i18n="app_subtitle">Smart Queue & Transparent Procurement System | SIH Problem #SIH26032</div>
+            </div>
+        </div>
+
+        <!-- CENTER NAVIGATION TABS -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="farmer" id="tabBtnFarmer">
+                <span class="tab-icon">👨‍🌾</span>
+                <span class="tab-text" data-i18n="nav_farmer">Farmer Portal</span>
+            </button>
+            <button class="nav-tab" data-tab="officer" id="tabBtnOfficer">
+                <span class="tab-icon">🏢</span>
+                <span class="tab-text" data-i18n="nav_officer">Mandi Operations Desk</span>
+                <span class="live-dot-badge">LIVE</span>
+            </button>
+            <button class="nav-tab" data-tab="sms" id="tabBtnSms">
+                <span class="tab-icon">📟</span>
+                <span class="tab-text" data-i18n="nav_sms">Offline SMS / IVR</span>
+            </button>
+        </nav>
+
+        <!-- RIGHT UTILITIES: LANGUAGE & RESET -->
+        <div class="nav-actions">
+            <!-- Language Selector -->
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="hi">हिंदी</button>
+                <button class="lang-btn" data-lang="pa">ਪੰਜਾਬੀ</button>
+            </div>
+
+            <!-- Reset Demo State -->
+            <button class="btn-icon-circle" id="btnResetDemo" title="Reset Demo Data">
+                🔄
+            </button>
+        </div>
+    </header>
+
+    <!-- LIVE NOTIFICATION TOAST OVERLAY -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="main-content">
+
+        <!-- ============================================================= -->
+        <!-- TAB 1: FARMER PORTAL                                         -->
+        <!-- ============================================================= -->
+        <section id="viewFarmer" class="view-panel active">
+            
+            <!-- Smartphone View Toggle (For Laptop / Projector Presentations) -->
+            <div class="view-mode-bar">
+                <div class="view-mode-info">
+                    <span class="mode-pill">📱 Mobile-First PWA</span>
+                    <span>Farmers use this on Android smartphones — instant PWA with zero Play Store download drop-off</span>
+                </div>
+                <div class="mode-toggles">
+                    <button class="btn-toggle active" id="btnModeWide">🖥️ Full-Screen View</button>
+                    <button class="btn-toggle" id="btnModePhone">📱 Phone App Mockup</button>
+                </div>
+            </div>
+
+            <div class="farmer-layout" id="farmerLayout">
+                
+                <!-- LEFT SIDE: BOOKING WIZARD & PROFILE -->
+                <div class="farmer-left-col">
+                    
+                    <!-- Mandi Live Status Bar -->
+                    <div class="mandi-status-bar card">
+                        <div class="status-bar-header">
+                            <div class="mandi-info">
+                                <span class="mandi-badge">APMC Verified</span>
+                                <h3 id="currentMandiName">Khanna Grain Market (Asia's Largest)</h3>
+                                <p id="currentMandiDistrict">Ludhiana, Punjab • Avg. Processing: 20 Mins</p>
+                            </div>
+                            <div class="mandi-traffic-pill" id="mandiTrafficPill">
+                                <span class="traffic-dot pulse"></span>
+                                <span id="mandiTrafficText">Yard Load: 68% (Moderate)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slot Booking Wizard Card -->
+                    <div class="card booking-wizard-card">
+                        <div class="card-header">
+                            <div class="header-icon-box">📅</div>
+                            <div>
+                                <h2 data-i18n="booking_card_title">Book Procurement Slot & E-Token</h2>
+                                <p class="card-desc" data-i18n="booking_card_desc">Pre-book your arrival window to bypass road queues and guarantee priority weighment.</p>
+                            </div>
+                        </div>
+
+                        <form id="slotBookingForm" class="booking-form">
+                            <!-- Farmer Details Section -->
+                            <div class="form-section-title" data-i18n="farmer_info_title">1. Farmer & Vehicle Details</div>
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label data-i18n="farmer_name_label">Farmer Full Name *</label>
+                                    <input type="text" id="farmerName" value="Ramesh Kumar Patel" required>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="farmer_phone_label">Mobile Number (For SMS Updates) *</label>
+                                    <div class="input-with-prefix">
+                                        <span class="prefix">+91</span>
+                                        <input type="tel" id="farmerPhone" value="9876543210" maxlength="10" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label data-i18n="aadhaar_label">Aadhaar (Last 4 digits)</label>
+                                    <input type="text" id="farmerAadhaar" value="4892" maxlength="4">
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="vehicle_type_label">Vehicle Type</label>
+                                    <select id="vehicleType">
+                                        <option value="Tractor Trolley">Tractor Trolley (ट्रैक्टर ट्रॉली)</option>
+                                        <option value="Mini Truck (Bolero/Maxi)">Mini Truck / Bolero Maxi</option>
+                                        <option value="Heavy Commercial Truck">10-Tyre Commercial Truck</option>
+                                        <option value="Bullock Cart">Bullock Cart (बैलगाड़ी)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="vehicle_num_label">Vehicle Reg. Number *</label>
+                                    <input type="text" id="vehicleNumber" value="PB-10-CR-2291" required>
+                                </div>
+                            </div>
+
+                            <!-- Crop & Mandi Selection -->
+                            <div class="form-section-title" data-i18n="crop_mandi_title">2. Crop & Center Selection</div>
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label data-i18n="select_mandi_label">Select Procurement Center (Mandi) *</label>
+                                    <select id="selectMandi">
+                                        <!-- Populated via API -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="select_crop_label">Crop to Procure *</label>
+                                    <select id="selectCrop">
+                                        <!-- Populated via API -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label data-i18n="estimated_qty_label">Estimated Quantity (Quintals) *</label>
+                                    <input type="number" id="estimatedQty" value="50" min="1" max="500" step="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="date_label">Preferred Date *</label>
+                                    <input type="date" id="bookingDate" required>
+                                </div>
+                            </div>
+
+                            <!-- Real-time MSP Calculator Banner -->
+                            <div class="msp-payout-estimate">
+                                <div class="estimate-col">
+                                    <span class="est-label" data-i18n="govt_msp_rate">Govt. MSP Rate</span>
+                                    <span class="est-val" id="dispMspRate">₹2,275 / Qtl</span>
+                                </div>
+                                <div class="estimate-divider">×</div>
+                                <div class="estimate-col">
+                                    <span class="est-label" data-i18n="est_weight">Est. Weight</span>
+                                    <span class="est-val" id="dispEstWeight">50.0 Qtl</span>
+                                </div>
+                                <div class="estimate-divider">=</div>
+                                <div class="estimate-col highlight">
+                                    <span class="est-label" data-i18n="est_dbt_payout">Estimated DBT Payout</span>
+                                    <span class="est-val text-green" id="dispEstPayout">₹1,13,750</span>
+                                </div>
+                            </div>
+
+                            <!-- Intelligent Time Slot Selection with Congestion Indicators -->
+                            <div class="form-section-title" data-i18n="select_slot_title">3. Choose Intelligent Time Slot (Paced Traffic)</div>
+                            <div class="slot-picker-grid" id="slotsContainer">
+                                <!-- Populated dynamically -->
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary-large" id="btnSubmitBooking">
+                                    <span class="btn-icon">🎟️</span>
+                                    <span data-i18n="btn_generate_token">Confirm Slot & Generate Digital E-Token</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT SIDE: ACTIVE TOKEN PASS, RADAR & SMS SIMULATOR -->
+                <div class="farmer-right-col">
+                    
+                    <!-- ACTIVE DIGITAL E-TOKEN PASS -->
+                    <div class="card token-pass-card" id="tokenPassCard">
+                        <div class="token-pass-header">
+                            <div class="token-pass-logo">
+                                <span>🏛️</span>
+                                <div>
+                                    <div class="pass-gov-title">Govt. of Punjab / APMC Electronic Pass</div>
+                                    <div class="pass-sub-title">National Agricultural Procurement Gate Pass</div>
+                                </div>
+                            </div>
+                            <div class="pass-badge-active" id="tokenStageBadge">SLOT BOOKED</div>
+                        </div>
+
+                        <div class="token-pass-body">
+                            <div class="token-number-hero">
+                                <span class="label" data-i18n="token_id_label">E-TOKEN NUMBER</span>
+                                <h1 class="token-code" id="passTokenNumber">MND-KHN-105</h1>
+                                <div class="pass-lane-box">
+                                    <span data-i18n="assigned_lane">Dedicated Lane:</span> <strong id="passLane">Lane-A</strong>
+                                </div>
+                            </div>
+
+                            <div class="token-qr-section">
+                                <div class="qr-box" id="passQrContainer" title="Scan at Mandi Gate">
+                                    <!-- Dynamic SVG QR Code will be rendered here -->
+                                </div>
+                                <div class="qr-caption">
+                                    <span class="scan-icon">📷</span>
+                                    <span data-i18n="scan_at_gate">Scan this QR at Mandi Inward Gate</span>
+                                </div>
+                            </div>
+
+                            <div class="token-meta-grid">
+                                <div class="meta-item">
+                                    <span class="meta-label" data-i18n="farmer_name_label">Farmer Name</span>
+                                    <span class="meta-value" id="passFarmerName">Ramesh Kumar Patel</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label" data-i18n="crop_name">Crop</span>
+                                    <span class="meta-value" id="passCropName">Wheat (Kanak)</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label" data-i18n="allocated_slot">Allocated Slot</span>
+                                    <span class="meta-value" id="passSlotTime">11:00 AM - 12:00 PM</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label" data-i18n="vehicle_num_label">Vehicle No.</span>
+                                    <span class="meta-value" id="passVehicleNo">PB-10-CR-2291</span>
+                                </div>
+                            </div>
+
+                            <div class="pass-actions">
+                                <button class="btn-secondary-small" id="btnPrintJForm" onclick="window.print()">
+                                    🖨️ <span data-i18n="print_pass">Print / Download Pass</span>
+                                </button>
+                                <button class="btn-secondary-small" id="btnShowJFormModal">
+                                    📄 <span data-i18n="view_jform">View Mandi J-Form</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REAL-TIME QUEUE RADAR -->
+                    <div class="card queue-radar-card">
+                        <div class="card-header-compact">
+                            <div class="radar-title-group">
+                                <span class="radar-ping-icon">📡</span>
+                                <h3 data-i18n="queue_radar_title">Live Mandi Queue Radar</h3>
+                            </div>
+                            <span class="live-refresh-badge" id="radarLastUpdated">Updated just now</span>
+                        </div>
+
+                        <div class="radar-stats-grid">
+                            <div class="radar-stat-box highlight-blue">
+                                <span class="stat-num" id="radarServingToken">MND-KHN-103</span>
+                                <span class="stat-title" data-i18n="currently_serving">At Weighbridge Now</span>
+                            </div>
+                            <div class="radar-stat-box highlight-amber">
+                                <span class="stat-num" id="radarAheadCount">2</span>
+                                <span class="stat-title" data-i18n="vehicles_ahead">Vehicles Ahead of You</span>
+                            </div>
+                            <div class="radar-stat-box highlight-green">
+                                <span class="stat-num" id="radarWaitMins">~25 Min</span>
+                                <span class="stat-title" data-i18n="estimated_wait">Estimated Wait Time</span>
+                            </div>
+                        </div>
+
+                        <!-- 5-STAGE PROCUREMENT LIFECYCLE STEPPER -->
+                        <div class="lifecycle-stepper" id="lifecycleStepper">
+                            <div class="step-node active" id="stepNode1">
+                                <div class="step-circle">1</div>
+                                <div class="step-label" data-i18n="step_slot_booked">Slot Booked</div>
+                                <div class="step-time">Confirmed</div>
+                            </div>
+                            <div class="step-connector" id="stepConn1"></div>
+
+                            <div class="step-node" id="stepNode2">
+                                <div class="step-circle">2</div>
+                                <div class="step-label" data-i18n="step_gate_in">Gate Inward</div>
+                                <div class="step-time" id="timeGateIn">Pending</div>
+                            </div>
+                            <div class="step-connector" id="stepConn2"></div>
+
+                            <div class="step-node" id="stepNode3">
+                                <div class="step-circle">3</div>
+                                <div class="step-label" data-i18n="step_weighment">Weighbridge</div>
+                                <div class="step-time" id="timeWeighment">Pending</div>
+                            </div>
+                            <div class="step-connector" id="stepConn3"></div>
+
+                            <div class="step-node" id="stepNode4">
+                                <div class="step-circle">4</div>
+                                <div class="step-label" data-i18n="step_quality">Quality Assay</div>
+                                <div class="step-time" id="timeQuality">Pending</div>
+                            </div>
+                            <div class="step-connector" id="stepConn4"></div>
+
+                            <div class="step-node" id="stepNode5">
+                                <div class="step-circle">5</div>
+                                <div class="step-label" data-i18n="step_payment">DBT Payment</div>
+                                <div class="step-time" id="timePayment">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REAL-TIME SMS & WHATSAPP NOTIFICATION SIMULATOR -->
+                    <div class="card sms-simulator-card">
+                        <div class="sms-phone-frame">
+                            <div class="phone-speaker-bar"></div>
+                            <div class="phone-screen-header">
+                                <span class="sms-sender">Govt APMC (VK-KISAN)</span>
+                                <span class="sms-timestamp">Live Push Delivery</span>
+                            </div>
+                            <div class="phone-messages-body" id="smsStreamBody">
+                                <!-- Dynamic SMS message bubbles will be inserted here -->
+                            </div>
+                            <div class="phone-home-indicator"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 2: MANDI PROCUREMENT OFFICER CONTROL DESK                -->
+        <!-- ============================================================= -->
+        <section id="viewOfficer" class="view-panel">
+            <div class="officer-layout">
+                
+                <!-- TOP KPI ROW & CONGESTION HEATMAP -->
+                <div class="kpi-row">
+                    <!-- Congestion Heatmap Gauge -->
+                    <div class="card kpi-card-congestion">
+                        <div class="kpi-header">
+                            <div>
+                                <span class="kpi-tag" data-i18n="kpi_yard_title">Yard Congestion & Traffic Flow</span>
+                                <h3 id="officerMandiHeading">Khanna Mandi Yard Monitor</h3>
+                            </div>
+                            <span class="congestion-indicator-pill" id="officerCongestionPill">68% Capacity</span>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" id="yardCapacityFill" style="width: 68%;"></div>
+                        </div>
+                        <div class="yard-stats-row">
+                            <span>Yard Capacity: <strong id="officerYardCap">70 Trucks</strong></span>
+                            <span>Inside Yard: <strong id="officerTrucksInside">48</strong></span>
+                            <span>Queued Outside: <strong id="officerTrucksWaiting">12</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Wait Time Reduction Impact KPI -->
+                    <div class="card kpi-card-metric">
+                        <div class="metric-icon-bubble green">⏱️</div>
+                        <div class="metric-data">
+                            <span class="metric-label" data-i18n="avg_turnaround">Average Turnaround Time</span>
+                            <h2 class="metric-number text-green"><span id="metricTurnaroundMins">38</span> <small>Mins</small></h2>
+                            <span class="metric-comparison">⬇️ <strong>96% reduction</strong> vs 16.5 hrs historic wait</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Procured Today -->
+                    <div class="card kpi-card-metric">
+                        <div class="metric-icon-bubble amber">🌾</div>
+                        <div class="metric-data">
+                            <span class="metric-label" data-i18n="procured_today">Procured Today</span>
+                            <h2 class="metric-number text-amber"><span id="metricProcuredQtl">1,420</span> <small>Qtl</small></h2>
+                            <span class="metric-comparison">Verified across 3 weighbridge lanes</span>
+                        </div>
+                    </div>
+
+                    <!-- Total MSP Disbursed -->
+                    <div class="card kpi-card-metric">
+                        <div class="metric-icon-bubble blue">💳</div>
+                        <div class="metric-data">
+                            <span class="metric-label" data-i18n="msp_disbursed">MSP Disbursed via PFMS DBT</span>
+                            <h2 class="metric-number text-blue">₹<span id="metricDisbursedLakhs">32.3</span> <small>Lakh</small></h2>
+                            <span class="metric-comparison">Direct to verified Farmer Bank A/c</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN WORKFLOW STATIONS & QUEUE TABLE -->
+                <div class="officer-workspace card">
+                    
+                    <!-- Officer Desk Controls & Filters -->
+                    <div class="officer-controls-bar">
+                        <div class="desk-tabs">
+                            <button class="desk-tab active" data-filter="ALL">All Queue (<span id="countAll">6</span>)</button>
+                            <button class="desk-tab" data-filter="SLOT_BOOKED">1. Arriving / At Gate (<span id="countBooked">2</span>)</button>
+                            <button class="desk-tab" data-filter="GATE_IN">2. Gate Verified (<span id="countGate">1</span>)</button>
+                            <button class="desk-tab" data-filter="WEIGHMENT">3. Weighbridge (<span id="countWeigh">1</span>)</button>
+                            <button class="desk-tab" data-filter="QUALITY_CHECK">4. Quality Lab (<span id="countQuality">1</span>)</button>
+                            <button class="desk-tab" data-filter="COMPLETED">5. Completed / Paid (<span id="countPaid">1</span>)</button>
+                        </div>
+
+                        <!-- Rapid QR Scanner Simulator -->
+                        <div class="quick-scanner-box">
+                            <input type="text" id="officerScanInput" placeholder="Enter or Scan Token (e.g. MND-KHN-105)...">
+                            <button class="btn-primary-small" id="btnOfficerScan">
+                                <span>⚡ Rapid Process</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LIVE ACTIVE TOKENS TABLE -->
+                    <div class="table-responsive">
+                        <table class="officer-queue-table">
+                            <thead>
+                                <tr>
+                                    <th>Token ID</th>
+                                    <th>Farmer Details</th>
+                                    <th>Crop & Quantity</th>
+                                    <th>Vehicle & Slot</th>
+                                    <th>Current Stage</th>
+                                    <th>Weights (Gross/Tare/Net)</th>
+                                    <th>Quality & MSP</th>
+                                    <th>Action Station</th>
+                                </tr>
+                            </thead>
+                            <tbody id="officerQueueTableBody">
+                                <!-- Populated dynamically from Flask API -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 3: OFFLINE FEATURE-PHONE SMS / IVR SIMULATOR             -->
+        <!-- ============================================================= -->
+        <section id="viewSms" class="view-panel">
+            <div class="sms-view-layout">
+                
+                <div class="card sms-explainer-card">
+                    <div class="explainer-badge">Rural Inclusivity USP</div>
+                    <h2>Toll-Free SMS & IVR Booking (For Non-Smartphone Farmers)</h2>
+                    <p>Over 40% of small and marginal Indian farmers use basic keypad feature phones without internet access. KisanDwar offers a zero-data, toll-free SMS and Missed-Call booking gateway integrated directly with the national APMC queue engine.</p>
+                    
+                    <div class="feature-bullets-grid">
+                        <div class="f-bullet">
+                            <span class="f-icon">💬</span>
+                            <div>
+                                <strong>Simple 1-Line SMS Protocol</strong>
+                                <p>Farmer sends: <code>BOOK WHEAT 50 KHANNA</code> to <strong>92123-KISAN</strong></p>
+                            </div>
+                        </div>
+                        <div class="f-bullet">
+                            <span class="f-icon">🤖</span>
+                            <div>
+                                <strong>Natural Language Parser</strong>
+                                <p>Extracts crop name, quintal weight, and nearest Mandi, booking optimal low-traffic slot.</p>
+                            </div>
+                        </div>
+                        <div class="f-bullet">
+                            <span class="f-icon">📞</span>
+                            <div>
+                                <strong>Interactive Voice Response (IVR)</strong>
+                                <p>Automated voice confirmation in Hindi / Punjabi with Token number and gate instructions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Nokia/Keypad Phone Simulator -->
+                <div class="keypad-simulator-wrapper">
+                    <div class="feature-phone-case">
+                        <div class="phone-screen-retro">
+                            <div class="retro-header">
+                                <span>📶 AIRTEL 4G</span>
+                                <span>11:30 AM</span>
+                            </div>
+                            <div class="retro-sms-app" id="retroSmsApp">
+                                <div class="retro-thread">
+                                    <div class="retro-msg outgoing">
+                                        <span class="text">BOOK WHEAT 40 KHANNA</span>
+                                        <span class="t-stamp">11:28 AM</span>
+                                    </div>
+                                    <div class="retro-msg incoming" id="retroReplyMsg">
+                                        <span class="text">KisanDwar: Token #MND-KHN-108 Booked! Date: 05-Sep [02:00 PM]. Center: Khanna Mandi. Crop: Wheat, 40 Qtl. Show SMS at Gate 1.</span>
+                                        <span class="t-stamp">11:29 AM</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="phone-keypad-panel">
+                            <div class="sms-input-form">
+                                <input type="text" id="retroSmsInput" value="BOOK WHEAT 40 KHANNA" placeholder="Type SMS...">
+                                <button class="btn-send-sms" id="btnSendRetroSms">SEND SMS ➡️</button>
+                            </div>
+                            <div class="keypad-grid">
+                                <div class="key">1 <span>.,</span></div>
+                                <div class="key">2 <span>ABC</span></div>
+                                <div class="key">3 <span>DEF</span></div>
+                                <div class="key">4 <span>GHI</span></div>
+                                <div class="key">5 <span>JKL</span></div>
+                                <div class="key">6 <span>MNO</span></div>
+                                <div class="key">7 <span>PQRS</span></div>
+                                <div class="key">8 <span>TUV</span></div>
+                                <div class="key">9 <span>WXYZ</span></div>
+                                <div class="key">*</div>
+                                <div class="key">0 <span>+</span></div>
+                                <div class="key">#</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- POPUP MODAL: OFFICIAL APMC DIGITAL J-FORM -->
+    <div class="modal-overlay" id="jformModal">
+        <div class="modal-dialog card">
+            <div class="modal-header">
+                <h3>Official APMC Mandi J-Form (विक्रय पर्ची / ਮੰਡੀ ਜੇ-ਫਾਰਮ)</h3>
+                <button class="btn-close-modal" id="btnCloseJForm">✕</button>
+            </div>
+            <div class="modal-body" id="jformContent">
+                <div class="jform-document">
+                    <div class="jform-top">
+                        <div class="jform-seal">🏛️</div>
+                        <div class="jform-heading">
+                            <h4>PUNJAB STATE AGRICULTURAL MARKETING BOARD</h4>
+                            <p>FORM 'J' - RULE 24(1) - SALE RECEIPT TO PRODUCER SELLER</p>
+                            <span class="jform-serial">Receipt No: <strong>PB/KHN/2026/09/8412</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="jform-details-grid">
+                        <div><strong>Farmer Name:</strong> <span id="jfFarmerName">Ramesh Kumar Patel</span></div>
+                        <div><strong>Farmer Reg / Aadhaar:</strong> <span id="jfFarmerUid">FARM-001 (Aadhaar: XX4892)</span></div>
+                        <div><strong>Mandi / Yard:</strong> <span id="jfMandi">Khanna Grain Market</span></div>
+                        <div><strong>Date of Sale:</strong> <span id="jfDate">05-Sep-2026</span></div>
+                        <div><strong>Crop:</strong> <span id="jfCrop">Wheat (Kanak - Grade A)</span></div>
+                        <div><strong>Vehicle Reg:</strong> <span id="jfVehicle">PB-10-CR-2291</span></div>
+                    </div>
+
+                    <table class="jform-table">
+                        <thead>
+                            <tr>
+                                <th>Gross Weight</th>
+                                <th>Tare Weight</th>
+                                <th>Net Weight</th>
+                                <th>Moisture %</th>
+                                <th>MSP Rate / Qtl</th>
+                                <th>Total Payable Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="jfGross">95.0 Qtl</td>
+                                <td id="jfTare">45.0 Qtl</td>
+                                <td id="jfNet">50.0 Qtl</td>
+                                <td id="jfMoisture">11.4%</td>
+                                <td id="jfMsp">₹2,275.00</td>
+                                <td id="jfTotal" class="text-green font-bold">₹1,13,750.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="jform-payment-banner">
+                        <div>
+                            <span class="dbt-badge">PFMS DBT Verified</span>
+                            <p>Direct Bank Transfer credited to: <strong id="jfBank">State Bank of India (A/c: XX1094)</strong></p>
+                            <p>DBT Transaction Reference (UTR): <code id="jfUtr">PFMS-DBT-2026090510294</code></p>
+                        </div>
+                        <div class="jform-stamp">
+                            <span>APMC KHANNA</span>
+                            <span>OFFICIALLY VERIFIED</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="window.print()">🖨️ Print Form 'J'</button>
+                <button class="btn-primary" id="btnDismissJForm">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT INCLUSIONS -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/farmer.js"></script>
+    <script src="/static/js/officer.js"></script>
+    <script src="/static/js/sms.js"></script>
+</body>
+</html>
