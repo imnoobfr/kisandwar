@@ -18,7 +18,7 @@ const AppState = {
 const I18N = {
     en: {
         app_title: "KisanDwar",
-        app_subtitle: "Smart Queue & Transparent Procurement System | SIH Problem #SIH26032",
+        app_subtitle: "Smart Queue & Transparent Procurement System",
         nav_farmer: "Farmer Portal",
         nav_officer: "Mandi Operations Desk",
         nav_sms: "Offline SMS / IVR",
@@ -63,7 +63,7 @@ const I18N = {
     },
     hi: {
         app_title: "किसान द्वार",
-        app_subtitle: "स्मार्ट मंडी कतार एवं पारदर्शी खरीद प्रणाली | एसआईएच समस्या #SIH26032",
+        app_subtitle: "स्मार्ट मंडी कतार एवं पारदर्शी खरीद प्रणाली",
         nav_farmer: "किसान पोर्टल",
         nav_officer: "मंडी संचालन डेस्क",
         nav_sms: "ऑफ़लाइन एसएमएस / आईवीआर",
@@ -108,7 +108,7 @@ const I18N = {
     },
     pa: {
         app_title: "ਕਿਸਾਨ ਦੁਆਰ",
-        app_subtitle: "ਸਮਾਰਟ ਮੰਡੀ ਲਾਈਨ ਪ੍ਰਬੰਧਨ ਅਤੇ ਖਰੀਦ ਪ੍ਰਣਾਲੀ | SIH #SIH26032",
+        app_subtitle: "ਸਮਾਰਟ ਮੰਡੀ ਲਾਈਨ ਪ੍ਰਬੰਧਨ ਅਤੇ ਖਰੀਦ ਪ੍ਰਣਾਲੀ",
         nav_farmer: "ਕਿਸਾਨ ਪੋਰਟਲ",
         nav_officer: "ਮੰਡੀ ਅਧਿਕਾਰੀ ਡੈਸਕ",
         nav_sms: "ਆਫਲਾਈਨ ਐਸਐਮਐਸ",
