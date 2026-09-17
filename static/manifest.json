@@ -1,0 +1,16 @@
+{
+  "name": "KisanDwar - Farmer Mandi App",
+  "short_name": "KisanDwar",
+  "description": "Smart Mandi Queue & Procurement Pass for Farmers",
+  "start_url": "/?mode=pwa",
+  "display": "standalone",
+  "background_color": "#059669",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23059669'/><text x='50%' y='68%' font-size='60' text-anchor='middle'>🌾</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

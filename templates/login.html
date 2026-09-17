@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisanDwar | Login & Registration Portal</title>
+    <meta name="theme-color" content="#059669">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green-600: #059669;
+            --green-700: #047857;
+            --green-800: #065f46;
+            --green-50: #ecfdf5;
+            --green-100: #d1fae5;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-400: #94a3b8;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --amber-500: #f59e0b;
+            --red-500: #ef4444;
+            --white: #ffffff;
+            --radius: 14px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.18);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--slate-900) 0%, #0d3321 50%, var(--slate-800) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px 16px 40px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 30%, rgba(5,150,105,0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 70%, rgba(245,158,11,0.07) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* ---- HEADER ---- */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-emoji {
+            font-size: 2.8rem;
+            filter: drop-shadow(0 2px 6px rgba(5,150,105,0.5));
+        }
+
+        .brand-name-big {
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #34d399, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-sub-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--amber-500);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .tagline {
+            color: var(--slate-400);
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+
+        .sih-badge {
+            display: inline-block;
+            background: rgba(245,158,11,0.15);
+            color: var(--amber-500);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---- MAIN CARD WRAPPER ---- */
+        .auth-portal {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---- TABS ---- */
+        .portal-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: rgba(15,23,42,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius) var(--radius) 0 0;
+            overflow: hidden;
+        }
+
+        .ptab {
+            padding: 13px 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--slate-400);
+            transition: all 0.25s ease;
+            border: none;
+            background: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .ptab .tab-icon { font-size: 1.1rem; }
+
+        .ptab:hover { color: var(--green-600); background: rgba(5,150,105,0.06); }
+
+        .ptab.active {
+            color: var(--white);
+            background: var(--green-700);
+            border-bottom: 2px solid #34d399;
+        }
+
+        /* ---- PANEL CARD ---- */
+        .auth-card {
+            background: rgba(30,41,59,0.95);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 28px 28px 24px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(12px);
+        }
+
+        .auth-panel { display: none; }
+        .auth-panel.active { display: block; }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .panel-desc {
+            color: var(--slate-400);
+            font-size: 0.82rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* ---- FORM ELEMENTS ---- */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--slate-400);
+            margin-bottom: 5px;
+            letter-spacing: 0.3px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 11px 14px;
+            background: rgba(15,23,42,0.7);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: var(--white);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--green-600);
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.18);
+        }
+
+        input::placeholder { color: var(--slate-600); }
+
+        select option { background: var(--slate-800); }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ---- PHONE PREFIX ---- */
+        .phone-field {
+            display: flex;
+            align-items: center;
+            background: rgba(15,23,42,0.7);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .phone-field:focus-within {
+            border-color: var(--green-600);
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.18);
+        }
+
+        .phone-prefix {
+            padding: 11px 12px;
+            background: rgba(5,150,105,0.15);
+            color: var(--green-600);
+            font-size: 0.88rem;
+            font-weight: 700;
+            white-space: nowrap;
+            border-right: 1.5px solid rgba(255,255,255,0.08);
+        }
+
+        .phone-field input {
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            flex: 1;
+            box-shadow: none;
+        }
+
+        .phone-field input:focus {
+            box-shadow: none;
+            border: none;
+        }
+
+        /* ---- BUTTONS ---- */
+        .btn-primary-auth {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--green-700), var(--green-600));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-primary-auth:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--green-800), var(--green-700));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(5,150,105,0.35);
+        }
+
+        .btn-primary-auth:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-guest {
+            width: 100%;
+            padding: 13px;
+            background: transparent;
+            color: var(--amber-500);
+            border: 1.5px solid rgba(245,158,11,0.4);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-guest:hover {
+            background: rgba(245,158,11,0.08);
+            border-color: var(--amber-500);
+        }
+
+        /* ---- ERROR / SUCCESS ---- */
+        .auth-message {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-top: 12px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-message.error {
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5;
+            display: flex;
+        }
+
+        .auth-message.success {
+            background: rgba(5,150,105,0.12);
+            border: 1px solid rgba(5,150,105,0.3);
+            color: #6ee7b7;
+            display: flex;
+        }
+
+        /* ---- GUEST CARD ---- */
+        .guest-highlight {
+            background: rgba(245,158,11,0.07);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+
+        .guest-highlight h4 {
+            color: var(--amber-500);
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .guest-feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .guest-feature-list li {
+            color: var(--slate-400);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guest-feature-list li::before {
+            content: '✅';
+            font-size: 0.75rem;
+        }
+
+        /* ---- DEMO CREDENTIALS BOX ---- */
+        .demo-creds {
+            background: rgba(15,23,42,0.7);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 16px;
+        }
+
+        .demo-creds-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--slate-400);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .cred-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .cred-label { color: var(--slate-400); font-size: 0.78rem; }
+        .cred-val {
+            font-family: 'JetBrains Mono', monospace, sans-serif;
+            font-size: 0.82rem;
+            color: #34d399;
+            font-weight: 600;
+            background: rgba(52,211,153,0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* ---- FOOTER ---- */
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--slate-600);
+            font-size: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-footer a { color: var(--green-600); text-decoration: none; }
+
+        /* ---- PASSWORD TOGGLE ---- */
+        .pass-wrapper {
+            position: relative;
+        }
+
+        .pass-wrapper input { padding-right: 42px; }
+
+        .toggle-pass {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--slate-400);
+            font-size: 1rem;
+            user-select: none;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* ---- DIVIDER ---- */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .divider span {
+            font-size: 0.72rem;
+            color: var(--slate-600);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 480px) {
+            body { padding: 12px 10px 30px; }
+            .auth-card { padding: 22px 18px 20px; }
+            .brand-name-big { font-size: 1.9rem; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        /* ---- LOADING SPINNER ---- */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="auth-header">
+        <div class="brand-logo-wrap">
+            <span class="logo-emoji">🌾</span>
+            <div>
+                <div class="brand-name-big">KisanDwar</div>
+                <div class="brand-sub-text">MandiSetu</div>
+            </div>
+        </div>
+        <p class="tagline">Smart Queue & Transparent Procurement System</p>
+        <span class="sih-badge">🏆 SIH 2026 — Problem #SIH26032</span>
+    </header>
+
+    <!-- AUTH PORTAL -->
+    <div class="auth-portal">
+
+        <!-- TABS -->
+        <div class="portal-tabs" role="tablist">
+            <button class="ptab active" data-panel="register" role="tab" aria-selected="true">
+                <span class="tab-icon">📝</span>
+                <span>Register</span>
+            </button>
+            <button class="ptab" data-panel="login" role="tab" aria-selected="false">
+                <span class="tab-icon">🔑</span>
+                <span>Farmer Login</span>
+            </button>
+            <button class="ptab" data-panel="admin" role="tab" aria-selected="false">
+                <span class="tab-icon">🏢</span>
+                <span>Admin</span>
+            </button>
+        </div>
+
+        <!-- CARD PANELS -->
+        <div class="auth-card">
+
+            <!-- PANEL: REGISTER -->
+            <div id="panel-register" class="auth-panel active">
+                <h2 class="panel-title">👨‍🌾 New Farmer Registration</h2>
+                <p class="panel-desc">Create your free KisanDwar account to book mandi slots and track your procurement journey.</p>
+
+                <form id="registerForm" autocomplete="off" novalidate>
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="reg-name" placeholder="e.g. Ramesh Kumar Patel" autocomplete="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number *</label>
+                        <div class="phone-field">
+                            <span class="phone-prefix">+91</span>
+                            <input type="tel" id="reg-phone" placeholder="10-digit mobile" maxlength="10" autocomplete="tel" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password * (min 6 characters)</label>
+                        <div class="pass-wrapper">
+                            <input type="password" id="reg-password" placeholder="Create a strong password" autocomplete="new-password" required>
+                            <button type="button" class="toggle-pass" data-target="reg-password">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>State *</label>
+                            <select id="reg-state">
+                                <option value="">Select State</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>District *</label>
+                            <input type="text" id="reg-district" placeholder="e.g. Ludhiana">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Preferred Mandi</label>
+                        <select id="reg-mandi">
+                            <option value="1">Khanna Grain Market (Asia's Largest)</option>
+                            <option value="2">Karnal APMC Sub-Yard</option>
+                            <option value="3">Barnala Food Grain Center</option>
+                            <option value="4">Ujjain Krishi Upaj Mandi</option>
+                        </select>
+                    </div>
+
+                    <div id="reg-msg" class="auth-message" role="alert"></div>
+
+                    <button type="submit" class="btn-primary-auth" id="btn-register">
+                        <span>📝 Create Account & Enter KisanDwar</span>
+                    </button>
+                </form>
+
+                <div class="divider"><span>or explore without an account</span></div>
+
+                <button class="btn-guest" id="btn-guest-reg">
+                    👁️ Guest / Demo Access (SIH Judges)
+                </button>
+            </div>
+
+            <!-- PANEL: FARMER LOGIN -->
+            <div id="panel-login" class="auth-panel">
+                <h2 class="panel-title">🔑 Farmer Login</h2>
+                <p class="panel-desc">Login with your registered mobile number and password.</p>
+
+                <form id="loginForm" autocomplete="off" novalidate>
+                    <div class="form-group">
+                        <label>Registered Mobile Number *</label>
+                        <div class="phone-field">
+                            <span class="phone-prefix">+91</span>
+                            <input type="tel" id="login-phone" placeholder="10-digit mobile" maxlength="10" autocomplete="tel" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <div class="pass-wrapper">
+                            <input type="password" id="login-password" placeholder="Your password" autocomplete="current-password" required>
+                            <button type="button" class="toggle-pass" data-target="login-password">👁️</button>
+                        </div>
+                    </div>
+
+                    <div id="login-msg" class="auth-message" role="alert"></div>
+
+                    <button type="submit" class="btn-primary-auth" id="btn-login">
+                        <span>🔑 Login to KisanDwar</span>
+                    </button>
+                </form>
+
+                <div class="divider"><span>or explore without an account</span></div>
+
+                <button class="btn-guest" id="btn-guest-login">
+                    👁️ Guest / Demo Access (SIH Judges)
+                </button>
+
+                <div class="demo-creds">
+                    <div class="demo-creds-title">⚡ Quick Demo Fill</div>
+                    <div class="cred-row">
+                        <span class="cred-label">Mobile (pre-seeded farmer)</span>
+                        <span class="cred-val" id="fill-demo-phone">9876543210</span>
+                    </div>
+                    <div class="cred-row">
+                        <span class="cred-label">Note</span>
+                        <span class="cred-val" style="font-family: inherit; font-size:0.7rem; color: var(--amber-500);">Use Guest access for demo farmers</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL: ADMIN LOGIN -->
+            <div id="panel-admin" class="auth-panel">
+                <h2 class="panel-title">🏢 Mandi Admin Login</h2>
+                <p class="panel-desc">Mandi Inspector / APMC Officer login to access the Operations Control Desk.</p>
+
+                <form id="adminForm" autocomplete="off" novalidate>
+                    <div class="form-group">
+                        <label>Admin Username *</label>
+                        <input type="text" id="admin-username" placeholder="e.g. admin" autocomplete="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <div class="pass-wrapper">
+                            <input type="password" id="admin-password" placeholder="Admin password" autocomplete="current-password" required>
+                            <button type="button" class="toggle-pass" data-target="admin-password">👁️</button>
+                        </div>
+                    </div>
+
+                    <div id="admin-msg" class="auth-message" role="alert"></div>
+
+                    <button type="submit" class="btn-primary-auth" id="btn-admin">
+                        <span>🏢 Login to Operations Desk</span>
+                    </button>
+                </form>
+
+                <div class="demo-creds">
+                    <div class="demo-creds-title">🔐 Demo Admin Credentials</div>
+                    <div class="cred-row">
+                        <span class="cred-label">Username</span>
+                        <span class="cred-val" id="fill-admin-user">admin</span>
+                    </div>
+                    <div class="cred-row">
+                        <span class="cred-label">Password</span>
+                        <span class="cred-val" id="fill-admin-pass">mandi@2026</span>
+                    </div>
+                    <p style="color: var(--slate-600); font-size: 0.72rem; margin-top: 8px;">Click the values above to auto-fill</p>
+                </div>
+
+                <div class="divider"><span>or explore without an account</span></div>
+
+                <button class="btn-guest" id="btn-guest-admin">
+                    👁️ Guest / Demo Access (SIH Judges)
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- GUEST QUICK-ACCESS STRIP -->
+    <div style="margin-top: 18px; text-align: center; position: relative; z-index:1;">
+        <div class="guest-highlight" style="max-width: 480px; margin: 0 auto;">
+            <h4>👁️ SIH Judges — One-Click Demo Access</h4>
+            <ul class="guest-feature-list">
+                <li>Full Farmer Portal with slot booking & live queue radar</li>
+                <li>Mandi Operations Desk with stage advancement controls</li>
+                <li>Offline SMS / IVR feature-phone simulator</li>
+                <li>Multilingual UI (English, Hindi, Punjabi)</li>
+            </ul>
+            <button class="btn-guest" id="btn-guest-main" style="margin-top: 14px;">
+                ⚡ Enter KisanDwar as Guest (No Login Required)
+            </button>
+        </div>
+    </div>
+
+    <footer class="auth-footer">
+        <p>KisanDwar / MandiSetu &nbsp;•&nbsp; SIH 2026 Prototype &nbsp;•&nbsp; Problem #SIH26032</p>
+        <p style="margin-top: 4px;">Built with ❤️ for India's 100 million farmers</p>
+    </footer>
+
+    <script>
+    // ---- Tab switching ----
+    document.querySelectorAll('.ptab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.ptab').forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+        });
+    });
+
+    // ---- Password toggle ----
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const inp = document.getElementById(btn.dataset.target);
+            if (!inp) return;
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+        });
+    });
+
+    // ---- Show message helper ----
+    function showMsg(id, text, type) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = (type === 'error' ? '⚠️ ' : '✅ ') + text;
+        el.className = 'auth-message ' + type;
+    }
+
+    function hideMsg(id) {
+        const el = document.getElementById(id);
+        if (el) el.className = 'auth-message';
+    }
+
+    function setBtnLoading(id, loading) {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.disabled = loading;
+        if (loading) {
+            btn.dataset.orig = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> <span>Please wait...</span>';
+        } else {
+            btn.innerHTML = btn.dataset.orig || btn.innerHTML;
+        }
+    }
+
+    // ---- REGISTER ----
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideMsg('reg-msg');
+
+        const name = document.getElementById('reg-name').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const state = document.getElementById('reg-state').value;
+        const district = document.getElementById('reg-district').value.trim();
+        const preferred_mandi_id = parseInt(document.getElementById('reg-mandi').value);
+
+        if (!name || !phone || !password || !state || !district) {
+            showMsg('reg-msg', 'Please fill all required fields.', 'error');
+            return;
+        }
+
+        setBtnLoading('btn-register', true);
+
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, password, state, district, preferred_mandi_id })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showMsg('reg-msg', data.message, 'success');
+                setTimeout(() => window.location.href = '/', 800);
+            } else {
+                showMsg('reg-msg', data.error || 'Registration failed.', 'error');
+            }
+        } catch (err) {
+            showMsg('reg-msg', 'Network error. Please try again.', 'error');
+        } finally {
+            setBtnLoading('btn-register', false);
+        }
+    });
+
+    // ---- FARMER LOGIN ----
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideMsg('login-msg');
+
+        const phone = document.getElementById('login-phone').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        if (!phone || !password) {
+            showMsg('login-msg', 'Mobile number and password are required.', 'error');
+            return;
+        }
+
+        setBtnLoading('btn-login', true);
+
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showMsg('login-msg', data.message, 'success');
+                setTimeout(() => window.location.href = '/', 800);
+            } else {
+                showMsg('login-msg', data.error || 'Login failed.', 'error');
+            }
+        } catch (err) {
+            showMsg('login-msg', 'Network error. Please try again.', 'error');
+        } finally {
+            setBtnLoading('btn-login', false);
+        }
+    });
+
+    // ---- ADMIN LOGIN ----
+    document.getElementById('adminForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideMsg('admin-msg');
+
+        const username = document.getElementById('admin-username').value.trim();
+        const password = document.getElementById('admin-password').value;
+
+        if (!username || !password) {
+            showMsg('admin-msg', 'Username and password are required.', 'error');
+            return;
+        }
+
+        setBtnLoading('btn-admin', true);
+
+        try {
+            const res = await fetch('/api/auth/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showMsg('admin-msg', data.message, 'success');
+                setTimeout(() => window.location.href = '/', 800);
+            } else {
+                showMsg('admin-msg', data.error || 'Invalid credentials.', 'error');
+            }
+        } catch (err) {
+            showMsg('admin-msg', 'Network error. Please try again.', 'error');
+        } finally {
+            setBtnLoading('btn-admin', false);
+        }
+    });
+
+    // ---- GUEST ACCESS ----
+    async function guestLogin() {
+        try {
+            const res = await fetch('/api/auth/guest', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) window.location.href = '/';
+        } catch (err) {
+            window.location.href = '/app';
+        }
+    }
+
+    ['btn-guest-reg', 'btn-guest-login', 'btn-guest-admin', 'btn-guest-main'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.addEventListener('click', guestLogin);
+    });
+
+    // ---- DEMO CREDENTIAL AUTO-FILL ----
+    document.getElementById('fill-admin-user')?.addEventListener('click', () => {
+        document.getElementById('admin-username').value = 'admin';
+    });
+    document.getElementById('fill-admin-pass')?.addEventListener('click', () => {
+        document.getElementById('admin-password').value = 'mandi@2026';
+        // Switch to admin tab if not already
+        document.querySelector('[data-panel="admin"]')?.click();
+    });
+    </script>
+</body>
+</html>
